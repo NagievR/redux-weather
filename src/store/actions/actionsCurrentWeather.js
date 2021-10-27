@@ -1,43 +1,61 @@
-import { WEATHER_CARD_ADD } from "../actionTypes/typesCurrentWeather";
-import { weatherCardLoading, weatherCardLoaded } from "./actionsLoading";
+import fetchData from "../../api/fetchData";
+import {
+  WEATHER_CARD_ADD,
+  UPDATED_WEATHER_CARD_ADD,
+} from "../actionTypes/typesCurrentWeather";
+import {
+  weatherCardLoading,
+  weatherCardLoaded,
+  weatherCardUpdating,
+  weatherCardUpdated,
+} from "./actionsLoading";
+
+const generateURL = (cityName) =>
+  `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${cityName}&appid=${process.env.REACT_APP_WEATHER_API_KEY}`;
 
 const addWeatherCard = (weatherCard) => ({
   type: WEATHER_CARD_ADD,
   payload: weatherCard,
 });
 
+const addUpdatedWeatherCard = (updatedData) => ({
+  type: UPDATED_WEATHER_CARD_ADD,
+  payload: {
+    id: updatedData.id,
+    updatedData,
+  },
+});
+
 export const fetchWeatherCard = (cityName) => {
-  const URL = `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${cityName}&appid=${process.env.REACT_APP_WEATHER_API_KEY}`;
+  const URL = generateURL(cityName);
 
   return async (dispatch, getState) => {
-    try {
-      dispatch(weatherCardLoading());
-      
-      const res = await fetch(URL);
+    dispatch(weatherCardLoading());
 
-      if (!res.ok) {
-        throw res;
-      }
+    const data = await fetchData(URL);
 
-      const data = await res.json();
-
-      const alreadyAdded = getState().currentWeather.cityList.find(
-        (it) => it.name === data.name
-      );
-
-      if (alreadyAdded) {
-        alert(`City ${cityName} already added!`);
-        return;
-      }
-
-      dispatch(addWeatherCard(data));
-    } catch (error) {
-
-      console.warn("Cant fetch current weather: ");
-      console.warn(error)
-      
-    } finally {
-      dispatch(weatherCardLoaded());
+    const isAlreadyAdded = getState().currentWeather.cityList.find(
+      (it) => it.name === data.name
+    );
+    if (isAlreadyAdded) {
+      alert(`City ${cityName} already added!`);
+      return;
     }
+
+    dispatch(addWeatherCard(data));
+    dispatch(weatherCardLoaded());
+  };
+};
+
+export const updateWeatherCard = (cityName, id) => {
+  const URL = generateURL(cityName);
+
+  return async (dispatch) => {
+    dispatch(weatherCardUpdating(id));
+
+    const updatedData = await fetchData(URL);
+
+    dispatch(addUpdatedWeatherCard(updatedData));
+    dispatch(weatherCardUpdated(id))
   };
 };

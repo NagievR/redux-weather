@@ -5,6 +5,10 @@ import { useEffect, useState } from "react";
 const ANIMATION_DURATION_MS = 300;
 
 const UpdateBtn = ({ isUpdating, onClick }) => {
+  /**
+   * isAnimatedClass used to remove an animation class with delay
+   * to finish arrow rotating at least one time 
+   */
   const [isAnimatedClass, setIsAnimatedClass] = useState(false);
 
   useEffect(() => {

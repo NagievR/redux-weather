@@ -42,8 +42,8 @@ export const fetchWeatherCard = (cityName) => {
       return;
     }
 
-    dispatch(addWeatherCard(data));
     dispatch(weatherCardLoaded());
+    dispatch(addWeatherCard(data));
   };
 };
 

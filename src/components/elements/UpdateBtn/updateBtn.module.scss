@@ -1,0 +1,35 @@
+.btn {
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  height: 24px;
+  width: 24px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.15s transform, 0.15s background-color, opacity 0.15s;
+
+  &:hover {
+    background-color: #ebebeb;
+    transform: scale(1.1);
+  }
+
+  img {
+    height: 16px;
+    width: 16px;
+  }
+}
+
+.rotation {
+  transition: opacity 0.15s;
+  animation: rotate 0.3s linear;
+  opacity: 0.5;
+  cursor: default;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

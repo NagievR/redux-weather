@@ -19,6 +19,12 @@ body {
   box-sizing: content-box;
 }
 
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, calc(20% - 12px));
+  grid-gap: 15px;
+}
+
 a {
   text-decoration: none;
   color: initial;

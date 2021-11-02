@@ -7,7 +7,7 @@ const ANIMATION_DURATION_MS = 300;
 const UpdateBtn = ({ isUpdating, onClick }) => {
   /**
    * isAnimatedClass used to remove an animation class with delay
-   * to finish arrow rotating at least one time 
+   * to do arrow rotating at least one time 
    */
   const [isAnimatedClass, setIsAnimatedClass] = useState(false);
 
@@ -19,7 +19,7 @@ const UpdateBtn = ({ isUpdating, onClick }) => {
     } else {
       setIsAnimatedClass(true);
     }
-  }, [isUpdating]);
+  }, [isUpdating, isAnimatedClass]);
 
   const handleClick = () => {
     if (!isAnimatedClass && onClick) {

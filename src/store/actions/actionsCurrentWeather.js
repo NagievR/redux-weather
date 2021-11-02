@@ -2,6 +2,7 @@ import fetchData from "../../api/fetchData";
 import {
   WEATHER_CARD_ADD,
   UPDATED_WEATHER_CARD_ADD,
+  CARD_REMOVE,
 } from "../actionTypes/typesCurrentWeather";
 import {
   weatherCardLoading,
@@ -33,6 +34,7 @@ export const fetchWeatherCard = (cityName) => {
     dispatch(weatherCardLoading());
 
     const data = await fetchData(URL);
+    data.updatedAt = Date.now();
 
     const isAlreadyAdded = getState().currentWeather.cityList.find(
       (it) => it.name === data.name
@@ -54,8 +56,14 @@ export const updateWeatherCard = (cityName, id) => {
     dispatch(weatherCardUpdating(id));
 
     const updatedData = await fetchData(URL);
+    updatedData.updatedAt = Date.now();
 
     dispatch(addUpdatedWeatherCard(updatedData));
-    dispatch(weatherCardUpdated(id))
+    dispatch(weatherCardUpdated(id));
   };
 };
+
+export const removeCard = (id) => ({
+  type: CARD_REMOVE,
+  payload: { id },
+});

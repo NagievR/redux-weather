@@ -1,13 +1,14 @@
 import {
   WEATHER_CARD_ADD,
   UPDATED_WEATHER_CARD_ADD,
+  CARD_REMOVE,
 } from "../actionTypes/typesCurrentWeather";
 
 const initialState = {
   cityList: [],
 };
 
-const reducerCurrentWeather = (state = initialState, { type, payload }) => {
+const reducerWeatherCards = (state = initialState, { type, payload }) => {
   switch (type) {
     case WEATHER_CARD_ADD:
       return {
@@ -22,9 +23,15 @@ const reducerCurrentWeather = (state = initialState, { type, payload }) => {
         ),
       };
     }
+    case CARD_REMOVE: {
+      return {
+        ...state,
+        cityList: state.cityList.filter((it) => it.id !== payload.id),
+      };
+    }
     default:
       return state;
   }
 };
 
-export default reducerCurrentWeather;
+export default reducerWeatherCards;

@@ -1,12 +1,12 @@
 import { createStore, compose, applyMiddleware, combineReducers } from "redux";
 import thunk from "redux-thunk";
 
-import reducerCurrentWeather from "./reducers/reducerCurrentWeather";
+import reducerWeatherCards from "./reducers/reducerWeatherCards";
 import reducerLoading from "./reducers/reducerLoading";
 
 const store = createStore(
   combineReducers({
-    currentWeather: reducerCurrentWeather,
+    currentWeather: reducerWeatherCards,
     loading: reducerLoading,
   }),
   compose(

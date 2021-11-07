@@ -1,0 +1,78 @@
+.wrap {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  width: 300px;
+  padding: 10px 10px 17px 10px;
+  border-radius: 10px;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: transform 0.3s, opacity 0.3s, visibility 0.3s;
+  overflow: hidden;
+  
+  &.info {
+    background-color: rgba(194, 194, 194, 0.95);
+  }
+  &.success {
+    background-color: rgba(33, 150, 84, 0.95);
+  }
+  &.error {
+    background-color: rgba(209, 40, 40, 0.95);
+  }
+  &.success,
+  &.error {
+    color: #fff;
+  }
+  &.active {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.indicator {
+  content: "";
+  height: 4px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  background-color: rgb(49, 49, 49);
+  transition: 0.1s width linear;
+}
+
+.inner {
+  position: relative;
+  width: 100%;
+}
+
+.title {
+  font-size: 16px;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.message {
+  font-size: 14px;
+}
+
+.close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-radius: 50%;
+  height: 24px;
+  width: 24px;
+  transition: 0.3s background-color;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  img {
+    height: 100%;
+    width: 100%;
+  }
+}

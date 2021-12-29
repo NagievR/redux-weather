@@ -1,7 +1,12 @@
 import s from "./weatherCard.module.scss";
 import { useDispatch } from "react-redux";
-import { updateWeatherCard } from "../../../store/actions/actionsCurrentWeather";
+import {
+  updateWeatherCard,
+  removeCard,
+} from "../../../store/actions/actionsCurrentWeather";
 import { useSelector } from "react-redux";
+import UpdateBtn from "../../elements/UpdateBtn/UpdateBtn";
+import usePassedTime from "../../../hooks/usePassedTime";
 
 const isUpdatingCheck = (state, id) => {
   return state.loading.updatingCardsIds.includes(id);
@@ -10,21 +15,24 @@ const isUpdatingCheck = (state, id) => {
 const WeatherCard = ({ data }) => {
   const isUpdating = useSelector((state) => isUpdatingCheck(state, data.id));
   const dispatch = useDispatch();
+  const passedTime = usePassedTime(data.updatedAt);
 
   const update = () => {
     dispatch(updateWeatherCard(data.name, data.id));
   };
 
-  if (isUpdating) {
-    return <div className="preloader" />
+  const remove = () => {
+    dispatch(removeCard(data.id));
   }
 
   return (
     <article className={s.card}>
+      <UpdateBtn isUpdating={isUpdating} onClick={update} />
+      <div>last update: {passedTime}</div>
+      <button onClick={remove}>Remove</button>
       <div>city: {data.name}</div>
       <div>Weather: {data.weather[0].main}</div>
       <div>temperature: {data.main.temp}</div>
-      <button onClick={update}>Update</button>
     </article>
   );
 };

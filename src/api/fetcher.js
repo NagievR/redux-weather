@@ -1,16 +1,12 @@
-const fetchData = async (URL) => {
+const fetcher = async (URL) => {
   try {
     const response = await fetch(URL);
 
     if (!response.ok) {
-      throw response;
+      throw response.status;
     } 
 
     const data = await response.json();
-
-    if (!data) {
-      throw new Error(`"data" is empty: ${data}`);
-    }
 
     return data;
 
@@ -20,4 +16,4 @@ const fetchData = async (URL) => {
   }
 };
 
-export default fetchData;
+export default fetcher;

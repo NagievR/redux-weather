@@ -1,4 +1,5 @@
-import fetchData from "../../api/fetchData";
+import fetcher from "../../api/fetcher";
+import pushToLocalStorage from "../../helpers/pushToLocalStorage";
 import {
   WEATHER_CARD_ADD,
   UPDATED_WEATHER_CARD_ADD,
@@ -10,9 +11,6 @@ import {
   weatherCardUpdating,
   weatherCardUpdated,
 } from "./actionsLoading";
-
-const generateURL = (cityName) =>
-  `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${cityName}&appid=${process.env.REACT_APP_WEATHER_API_KEY}`;
 
 const addWeatherCard = (weatherCard) => ({
   type: WEATHER_CARD_ADD,
@@ -27,39 +25,49 @@ const addUpdatedWeatherCard = (updatedData) => ({
   },
 });
 
-export const fetchWeatherCard = (cityName) => {
-  const URL = generateURL(cityName);
+const getCurrentWeather = async (cityName) => {
+  const URL = `https://api.openweathermap.org/data/2.5/weather?units=metric&q=${cityName}&appid=${process.env.REACT_APP_WEATHER_API_KEY}`;
+  const data = await fetcher(URL);
+  data.updatedAt = Date.now();
+  return data;
+};
 
+export const fetchWeatherCard = (cityName) => {
   return async (dispatch, getState) => {
     dispatch(weatherCardLoading());
-
-    const data = await fetchData(URL);
-    data.updatedAt = Date.now();
+    const data = await getCurrentWeather(cityName);
+    dispatch(weatherCardLoaded());
 
     const isAlreadyAdded = getState().currentWeather.cityList.find(
       (it) => it.name === data.name
     );
     if (isAlreadyAdded) {
-      alert(`City ${cityName} already added!`);
-      return;
+      return alert(`City ${cityName} already added!`);
     }
 
-    dispatch(weatherCardLoaded());
+    pushToLocalStorage("cityNames", data.name);
     dispatch(addWeatherCard(data));
   };
 };
 
-export const updateWeatherCard = (cityName, id) => {
-  const URL = generateURL(cityName);
+export const bulkFetchWeatherCard = (cityNames) => {
+  return async (dispatch, getState) => {
+    if (!Array.isArray(cityNames)) {
+      throw new Error('"cityNames" must be an array');
+    }
+    const dataList = await Promise.all(
+      cityNames.map(async (name) => await getCurrentWeather(name))
+    );
+    console.log("data: ", dataList);
+  };
+};
 
+export const updateWeatherCard = (cityName, id) => {
   return async (dispatch) => {
     dispatch(weatherCardUpdating(id));
-
-    const updatedData = await fetchData(URL);
-    updatedData.updatedAt = Date.now();
-
-    dispatch(addUpdatedWeatherCard(updatedData));
+    const updatedData = await getCurrentWeather(cityName);
     dispatch(weatherCardUpdated(id));
+    dispatch(addUpdatedWeatherCard(updatedData));
   };
 };
 

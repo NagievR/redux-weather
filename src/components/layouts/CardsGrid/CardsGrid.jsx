@@ -1,20 +1,39 @@
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import useLocalStorage from "../../../hooks/useLocalStorage";
+import { bulkFetchWeatherCard } from "../../../store/actions/actionsCurrentWeather";
 import WeatherCard from "../WeatherCard/WeatherCard";
 
 const CardsGrid = () => {
-  const cardList = useSelector((state) => state.currentWeather.cityList);
+  const [cardsToShow, setCardsToShow] = useState([]);
+  const [storedCityNames] = useLocalStorage("cityNames");
+  const cards = useSelector((state) => state.currentWeather.cityList);
+  const dispatch = useDispatch();
 
-  return (
-    <section>
+  useEffect(() => {
+    // if (!cards) {
+      dispatch(bulkFetchWeatherCard(['lozova', 'lviv', 'kiev']));
+    // }
+  }, []);
+
+  // const isListEmpty = !cards && !storedCityNames;
+  
+  let content;
+  if (cardsToShow.length) {
+    content = (
       <ul className="grid">
-        {cardList.map((card) => (
+        {cardsToShow.map((card) => (
           <li key={card.id}>
             <WeatherCard data={card} />
           </li>
         ))}
       </ul>
-    </section>
-  );
+    );
+  } else {
+    content = <div>You haven`t added weather cards yet</div>;
+  }
+
+  return <section>{content}</section>;
 };
 
 export default CardsGrid;

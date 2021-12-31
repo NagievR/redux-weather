@@ -6,7 +6,7 @@ import {
 } from "../../../store/actions/actionsCurrentWeather";
 import { useSelector } from "react-redux";
 import UpdateBtn from "../../elements/UpdateBtn/UpdateBtn";
-import usePassedTime from "../../../hooks/usePassedTime";
+import usePassedTimeCount from "../../../hooks/usePassedTimeCount";
 
 const isUpdatingCheck = (state, id) => {
   return state.loading.updatingCardsIds.includes(id);
@@ -15,7 +15,7 @@ const isUpdatingCheck = (state, id) => {
 const WeatherCard = ({ data }) => {
   const isUpdating = useSelector((state) => isUpdatingCheck(state, data.id));
   const dispatch = useDispatch();
-  const passedTime = usePassedTime(data.updatedAt);
+  const passedTime = usePassedTimeCount(data.updatedAt);
 
   const update = () => {
     dispatch(updateWeatherCard(data.name, data.id));

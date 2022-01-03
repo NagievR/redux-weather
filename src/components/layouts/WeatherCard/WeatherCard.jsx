@@ -23,18 +23,32 @@ const WeatherCard = ({ data }) => {
 
   const remove = () => {
     dispatch(removeCard(data.id));
+  };
+
+  const isLoading = !data?.main?.temp;
+
+  let content;
+  if (isLoading) {
+    content = (
+      <>
+        <div>city: {data.name}</div>
+        <div>Loading...</div>
+      </>
+    );
+  } else {
+    content = (
+      <>
+        <UpdateBtn isUpdating={isUpdating} onClick={update} />
+        <div>last update: {passedTime}</div>
+        <button onClick={remove}>Remove</button>
+        <div>city: {data.name}</div>
+        <div>Weather: {data.weather[0].main}</div>
+        <div>temperature: {data.main.temp}</div>
+      </>
+    );
   }
 
-  return (
-    <article className={s.card}>
-      <UpdateBtn isUpdating={isUpdating} onClick={update} />
-      <div>last update: {passedTime}</div>
-      <button onClick={remove}>Remove</button>
-      <div>city: {data.name}</div>
-      <div>Weather: {data.weather[0].main}</div>
-      <div>temperature: {data.main.temp}</div>
-    </article>
-  );
+  return <article className={s.card}>{content}</article>;
 };
 
 export default WeatherCard;

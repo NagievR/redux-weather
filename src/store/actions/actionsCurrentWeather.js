@@ -1,10 +1,11 @@
-import fetcher from "../../api/fetcher";
-import pushToLocalStorage from "../../helpers/pushToLocalStorage";
+import fetcher from "../../helpers/fetcher";
+import { pushToArrayLS, removeElementFromArrayLS } from "../../helpers/localStorageManager";
 import {
-  WEATHER_CARD_ADD,
-  UPDATED_WEATHER_CARD_ADD,
+  WEATHER_CARDS_CONCAT,
+  WEATHER_CARD_UPDATED_ADD,
   CARD_REMOVE,
 } from "../actionTypes/typesCurrentWeather";
+import { showNotification } from "./actionNotification";
 import {
   weatherCardLoading,
   weatherCardLoaded,
@@ -12,16 +13,16 @@ import {
   weatherCardUpdated,
 } from "./actionsLoading";
 
-const addWeatherCard = (weatherCard) => ({
-  type: WEATHER_CARD_ADD,
-  payload: weatherCard,
+const concatWeatherCards = (data) => ({
+  type: WEATHER_CARDS_CONCAT,
+  payload: data,
 });
 
-const addUpdatedWeatherCard = (updatedData) => ({
-  type: UPDATED_WEATHER_CARD_ADD,
+const addUpdatedWeatherCard = (data) => ({
+  type: WEATHER_CARD_UPDATED_ADD,
   payload: {
-    id: updatedData.id,
-    updatedData,
+    id: data.id,
+    data,
   },
 });
 
@@ -34,6 +35,7 @@ const getCurrentWeather = async (cityName) => {
 
 export const fetchWeatherCard = (cityName) => {
   return async (dispatch, getState) => {
+
     dispatch(weatherCardLoading());
     const data = await getCurrentWeather(cityName);
     dispatch(weatherCardLoaded());
@@ -42,23 +44,30 @@ export const fetchWeatherCard = (cityName) => {
       (it) => it.name === data.name
     );
     if (isAlreadyAdded) {
-      return alert(`City ${cityName} already added!`);
+      dispatch(showNotification({
+        type: 'error',
+        text: `City ${cityName} already added!`,
+        title: 'Unsuccessfully'
+      }));
+      return;
     }
 
-    pushToLocalStorage("cityNames", data.name);
-    dispatch(addWeatherCard(data));
+    pushToArrayLS("cityNames", { name: data.name, id: data.id });
+    dispatch(concatWeatherCards(data));
   };
 };
 
-export const bulkFetchWeatherCard = (cityNames) => {
-  return async (dispatch, getState) => {
-    if (!Array.isArray(cityNames)) {
+export const bulkFetchWeatherCard = (cityList) => {
+  return async (dispatch) => {
+
+    if (!Array.isArray(cityList)) {
       throw new Error('"cityNames" must be an array');
     }
+
     const dataList = await Promise.all(
-      cityNames.map(async (name) => await getCurrentWeather(name))
+      cityList.map(async (city) => await getCurrentWeather(city.name))
     );
-    console.log("data: ", dataList);
+    dispatch(concatWeatherCards(dataList));
   };
 };
 
@@ -71,7 +80,10 @@ export const updateWeatherCard = (cityName, id) => {
   };
 };
 
-export const removeCard = (id) => ({
-  type: CARD_REMOVE,
-  payload: { id },
-});
+export const removeCard = (id) => {
+  removeElementFromArrayLS('cityNames', id, 'id');
+  return {
+    type: CARD_REMOVE,
+    payload: { id },
+  };
+};

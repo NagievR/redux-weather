@@ -22,7 +22,7 @@ const defineHowMuchTimeHasPassed = (timestamp) => {
   }
 };
 
-const usePassedTime = (timestamp) => {
+const usePassedTime = (timestamp, delay = 50000) => {
   const [passed, setPassed] = useState();
 
   useEffect(() => {
@@ -30,9 +30,9 @@ const usePassedTime = (timestamp) => {
       setPassed(defineHowMuchTimeHasPassed(timestamp));
     };
     setPassedTime();
-    const timerId = setInterval(setPassedTime, 50000);
+    const timerId = setInterval(setPassedTime, delay);
     return () => clearInterval(timerId);
-  }, [timestamp]);
+  }, [timestamp, delay]);
 
   return passed;
 };

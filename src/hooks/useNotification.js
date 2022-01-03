@@ -1,6 +1,13 @@
-// import { useContext } from "react";
-// import { NotificationContext } from "../contexts/notification.js";
+import { useDispatch } from "react-redux";
+import { showNotification } from "../store/actions/actionNotification";
 
-// export const useNotification = () => useContext(NotificationContext);
+const useNotification = () => {
+  const dispatch = useDispatch();
+  return ({ title, text, type, duration } = {}) => {
+    dispatch(
+      showNotification({ title, text, type, duration })
+    )
+  }
+};
 
-// export default useNotification;
+export default useNotification;

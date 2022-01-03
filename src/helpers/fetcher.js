@@ -3,7 +3,7 @@ const fetcher = async (URL) => {
     const response = await fetch(URL);
 
     if (!response.ok) {
-      throw response.status;
+      throw await response.json();
     } 
 
     const data = await response.json();
@@ -11,7 +11,7 @@ const fetcher = async (URL) => {
     return data;
 
   } catch (error) {
-    console.warn("Cant fetch current weather: ");
+    console.warn("Cant fetch data");
     console.warn(error);
   }
 };

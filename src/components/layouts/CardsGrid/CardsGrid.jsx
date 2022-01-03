@@ -1,22 +1,30 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import useLocalStorage from "../../../hooks/useLocalStorage";
+import { getItemLS } from "../../../helpers/localStorageManager";
 import { bulkFetchWeatherCard } from "../../../store/actions/actionsCurrentWeather";
+import useNotification from "../../../hooks/useNotification";
 import WeatherCard from "../WeatherCard/WeatherCard";
 
 const CardsGrid = () => {
   const [cardsToShow, setCardsToShow] = useState([]);
-  const [storedCityNames] = useLocalStorage("cityNames");
   const cards = useSelector((state) => state.currentWeather.cityList);
   const dispatch = useDispatch();
+  const notif = useNotification();
 
   useEffect(() => {
-    // if (!cards) {
-      dispatch(bulkFetchWeatherCard(['lozova', 'lviv', 'kiev']));
-    // }
-  }, []);
+    const storedNameCards = getItemLS('cityNames');
 
-  // const isListEmpty = !cards && !storedCityNames;
+    if (cards.length) {
+      setCardsToShow(cards);
+
+    } else if (storedNameCards.length) {
+      dispatch(bulkFetchWeatherCard(storedNameCards));
+      setCardsToShow(storedNameCards);
+
+    } else if (cardsToShow.length) {
+      setCardsToShow([]);
+    }
+  }, [cards, dispatch]);
   
   let content;
   if (cardsToShow.length) {

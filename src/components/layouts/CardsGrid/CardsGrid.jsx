@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getItemLS } from "../../../helpers/localStorageManager";
 import { bulkFetchWeatherCard } from "../../../store/actions/actionsCurrentWeather";
+import useNotification from "../../../hooks/useNotification";
 import WeatherCard from "../WeatherCard/WeatherCard";
 
 const CardsGrid = () => {
   const [cardsToShow, setCardsToShow] = useState([]);
   const cards = useSelector((state) => state.currentWeather.cityList);
   const dispatch = useDispatch();
+  const notif = useNotification();
 
   useEffect(() => {
     const storedNameCards = getItemLS('cityNames');

@@ -5,6 +5,7 @@ import {
   WEATHER_CARD_UPDATED_ADD,
   CARD_REMOVE,
 } from "../actionTypes/typesCurrentWeather";
+import { showNotification } from "./actionNotification";
 import {
   weatherCardLoading,
   weatherCardLoaded,
@@ -43,7 +44,12 @@ export const fetchWeatherCard = (cityName) => {
       (it) => it.name === data.name
     );
     if (isAlreadyAdded) {
-      return alert(`City ${cityName} already added!`);
+      dispatch(showNotification({
+        type: 'error',
+        text: `City ${cityName} already added!`,
+        title: 'Unsuccessfully'
+      }));
+      return;
     }
 
     pushToArrayLS("cityNames", { name: data.name, id: data.id });
@@ -52,7 +58,7 @@ export const fetchWeatherCard = (cityName) => {
 };
 
 export const bulkFetchWeatherCard = (cityList) => {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
 
     if (!Array.isArray(cityList)) {
       throw new Error('"cityNames" must be an array');

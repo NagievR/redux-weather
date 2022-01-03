@@ -1,27 +1,29 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { getItemLS, setItemLS } from "../helpers/localStorageManager";
+
+const getItem = (key) => {
+  if (!key) {
+    return;
+  }
+  const storedValue = getItemLS(() => getItem(key));
+  if (storedValue) {
+    return storedValue;
+  }
+};
 
 const useLocalStorage = (key) => {
-  const [value, setValue] = useState(() => {
-    if (!key) {
-      return;
-    }
-    const storedValue = JSON.parse(localStorage.getItem(key));
-    if (storedValue) {
-      return storedValue;
-    }
-  });
-
-  useEffect(() => console.log(value), [value]);
+  // get value from local storage
+  const [value, setValue] = useState(getItem);
 
   const setValueToStorage = (key, value) => {
     if (!key || !value) {
       return console.error('cant set data to localStorage. "key" or "value" is empty');
     }
-    localStorage.setItem(key, JSON.stringify(value));
+    setItemLS(key, value);
     setValue(value);
   };
 
-  return [value, setValueToStorage];
+  return [value, getItem, setValueToStorage];
 };
 
 export default useLocalStorage;

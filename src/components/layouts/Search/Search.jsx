@@ -21,7 +21,7 @@ const Search = () => {
   };
 
   return (
-    <section className={s.container}>
+    <form className={s.form} onSubmit={handleSubmit}>
       <Input value={search} onChange={setSearch} />
       <Button
         loading={loading}
@@ -29,7 +29,7 @@ const Search = () => {
         width="60px"
         onClick={handleSubmit}
       />
-    </section>
+    </form>
   );
 };
 
